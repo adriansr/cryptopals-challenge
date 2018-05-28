@@ -1,11 +1,12 @@
 package main
 
 import (
-	"os"
-	"fmt"
-	"strings"
-	"github.com/adriansr/cryptopals/crypto/xor"
 	"encoding/hex"
+	"fmt"
+	"os"
+	"strings"
+
+	"github.com/adriansr/cryptopals-challenge/crypto/xor"
 )
 
 func main() {

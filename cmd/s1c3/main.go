@@ -1,12 +1,13 @@
 package main
 
 import (
-	"os"
-	"fmt"
 	"encoding/hex"
-	"github.com/adriansr/cryptopals/text/freq_analysis"
-	"github.com/adriansr/cryptopals/terminal"
-	"github.com/adriansr/cryptopals/bruteforce/xor_single"
+	"fmt"
+	"os"
+
+	"github.com/adriansr/cryptopals-challenge/bruteforce/xor_single"
+	"github.com/adriansr/cryptopals-challenge/terminal"
+	"github.com/adriansr/cryptopals-challenge/text/freq_analysis"
 )
 
 func main() {
@@ -23,6 +24,3 @@ func main() {
 	plaintext, key, score := xor_single.BruteForceXORSingle(cyphertext, freq_analysis.EnglishRelativeFrequencies)
 	fmt.Printf("Result: <<%s>> key=%02X score=%f\n", terminal.PrettyASCII(plaintext), key, score)
 }
-
-
-

@@ -1,7 +1,7 @@
 package xor_single
 
 import (
-"github.com/adriansr/cryptopals/text/freq_analysis"
+	"github.com/adriansr/cryptopals-challenge/text/freq_analysis"
 )
 
 func BruteForceXORSingle(cyphertext []byte, frequencyMap freq_analysis.FrequencyMap) (plaintext []byte, key byte, score float64) {
@@ -9,10 +9,10 @@ func BruteForceXORSingle(cyphertext []byte, frequencyMap freq_analysis.Frequency
 	buf := make([]byte, N)
 
 	best := struct {
-		key int
-		str []byte
+		key   int
+		str   []byte
 		score float64
-	} {}
+	}{}
 
 	for keyInt := 0; keyInt < 256; keyInt++ {
 
@@ -34,8 +34,3 @@ func BruteForceXORSingle(cyphertext []byte, frequencyMap freq_analysis.Frequency
 	// fmt.Printf("Result: <<%s>> key=%02X score=%f\n", best.str, best.key, best.score)
 	return best.str, byte(best.key), best.score
 }
-
-
-
-
-

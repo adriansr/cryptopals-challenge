@@ -1,6 +1,6 @@
 package terminal
 
-import "github.com/adriansr/cryptopals/text/ascii"
+import "github.com/adriansr/cryptopals-challenge/text/ascii"
 
 var (
 	redQuestionMark = []byte("\x1b[38;5;1m?\x1b[m")
