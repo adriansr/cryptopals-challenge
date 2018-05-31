@@ -13,3 +13,13 @@ func Encrypt(plaintext []byte, key []byte) (ciphertext []byte) {
 	}
 	return ciphertext
 }
+
+func XORBlocks(dst []byte, src []byte) {
+	n := len(dst)
+	if len(src) != n {
+		panic(n)
+	}
+	for i := 0; i < n; i++ {
+		dst[i] ^= src[i]
+	}
+}
