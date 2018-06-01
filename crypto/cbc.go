@@ -4,14 +4,37 @@ import (
 	"crypto/cipher"
 	"github.com/adriansr/cryptopals-challenge/crypto/xor"
 	"io"
-	"github.com/adriansr/cryptopals-challenge/io_util"
+	"github.com/adriansr/cryptopals-challenge/util"
+	"github.com/adriansr/cryptopals-challenge/binary"
+	"fmt"
+	"os"
 )
 
-func CBCEncrypt(input io.Reader, iv []byte, algo cipher.Block) (ciphertext []byte) {
-	blockSize := algo.BlockSize()
+type CBCBlockMode struct {
+	cipher cipher.Block
+	iv []byte
+}
+
+func NewCBCBlockMode(iv []byte, cipher cipher.Block) BlockMode {
+	if len(iv) != cipher.BlockSize() {
+		panic(len(iv))
+	}
+	return &CBCBlockMode{
+		cipher: cipher,
+		iv: iv,
+	}
+}
+
+func (cbc *CBCBlockMode) Encrypt(input io.Reader) (ciphertext []byte) {
+	blockSize := cbc.cipher.BlockSize()
 	buf := make([]byte, blockSize)
+	iv := make([]byte, blockSize)
+	if len := copy(iv, cbc.iv); len != blockSize {
+		panic(len)
+	}
+
 	for {
-		nr, err := io_util.Read(input, buf)
+		nr, err := util.Read(input, buf)
 		// fmt.Fprintf(os.Stderr, "encrypt read %d %v\n", nr ,err)
 		if err != nil && err != io.EOF {
 			panic(err)
@@ -20,23 +43,26 @@ func CBCEncrypt(input io.Reader, iv []byte, algo cipher.Block) (ciphertext []byt
 			break
 		}
 		if nr != blockSize {
-			panic(nr)
-			// TODO: binary.PKCS7Pad(buf, blockSize)
+			// TODO: What to do with padding?
+			buf = binary.PKCS7Pad(buf[:nr], blockSize)
 		}
 		xor.XORBlocks(buf, iv)
-		algo.Encrypt(buf, buf)
+		cbc.cipher.Encrypt(buf, buf)
 		ciphertext = append(ciphertext, buf...)
 		copy(iv, buf)
 	}
 	return ciphertext
 }
 
-func CBCDecrypt(input io.Reader, iv []byte, algo cipher.Block) (plaintext []byte) {
-	blockSize := algo.BlockSize()
+func (cbc *CBCBlockMode) Decrypt(input io.Reader) (plaintext []byte) {
+	blockSize := cbc.cipher.BlockSize()
 	buf,plain := make([]byte, blockSize), make([]byte, blockSize)
+	iv := make([]byte, blockSize)
+	copy(iv, cbc.iv)
+
 	for {
-		nr, err := io_util.Read(input, buf)
-		// fmt.Fprintf(os.Stderr, "decrypt read %d %v\n", nr ,err)
+		nr, err := util.Read(input, buf)
+		fmt.Fprintf(os.Stderr, "decrypt read %d %v\n", nr ,err)
 		if err != nil && err != io.EOF {
 			panic(err)
 		}
@@ -45,9 +71,8 @@ func CBCDecrypt(input io.Reader, iv []byte, algo cipher.Block) (plaintext []byte
 		}
 		if nr != blockSize {
 			panic(nr)
-			//binary.PKCS7Pad(buf, 16)
 		}
-		algo.Decrypt(plain, buf)
+		cbc.cipher.Decrypt(plain, buf)
 		xor.XORBlocks(plain, iv)
 		plaintext = append(plaintext, plain...)
 		copy(iv, buf)

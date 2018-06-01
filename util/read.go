@@ -1,4 +1,4 @@
-package io_util
+package util
 
 import "io"
 

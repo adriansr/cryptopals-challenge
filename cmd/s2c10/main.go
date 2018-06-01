@@ -25,12 +25,13 @@ func main() {
 	cipher, err := aes.NewCipher(key)
 	iv := [aes.BlockSize]byte{}
 
+	bm := crypto.NewCBCBlockMode(iv[:], cipher)
 	if os.Args[1] == "d" {
 		inReader := base64.NewDecoder(base64.StdEncoding, fHandle)
-		plaintext := crypto.CBCDecrypt(inReader, iv[:], cipher)
+		plaintext := bm.Decrypt(inReader)
 		fmt.Printf("%s\n", string(plaintext))
 	} else {
-		ciphertext := crypto.CBCEncrypt(bufio.NewReader(fHandle), iv[:], cipher)
+		ciphertext := bm.Encrypt(bufio.NewReader(fHandle))
 		fmt.Printf("%s\n", string(base64.StdEncoding.EncodeToString(ciphertext)))
 	}
 }
