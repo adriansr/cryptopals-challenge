@@ -29,7 +29,7 @@ func (ecb *ECBBlockMode) Encrypt(input io.Reader) (ciphertext []byte) {
 		}
 		if nr != blockSize {
 			// TODO: What to do with padding?
-			binary.PKCS7Pad(buf, blockSize)
+			buf = binary.PKCS7Pad(buf[:nr], blockSize)
 		}
 		ecb.cipher.Encrypt(buf, buf)
 		ciphertext = append(ciphertext, buf...)
