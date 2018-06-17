@@ -6,8 +6,6 @@ import (
 	"io"
 	"github.com/adriansr/cryptopals-challenge/util"
 	"github.com/adriansr/cryptopals-challenge/binary"
-	"fmt"
-	"os"
 )
 
 type CBCBlockMode struct {
@@ -62,7 +60,7 @@ func (cbc *CBCBlockMode) Decrypt(input io.Reader) (plaintext []byte) {
 
 	for {
 		nr, err := util.Read(input, buf)
-		fmt.Fprintf(os.Stderr, "decrypt read %d %v\n", nr ,err)
+		//fmt.Fprintf(os.Stderr, "decrypt read %d %v\n", nr ,err)
 		if err != nil && err != io.EOF {
 			panic(err)
 		}
