@@ -47,7 +47,7 @@ func encrypt(userData string) string {
 	if err != nil {
 		panic(err)
 	}
-	return hex.EncodeToString(crypto.NewCBCBlockMode(iv, cipher).Encrypt(strings.NewReader(data)))
+	return hex.EncodeToString(crypto.NewCBCBlockMode(iv, cipher).Encrypt(binary.NewPKCS7Reader(strings.NewReader(data), aes.BlockSize)))
 }
 
 func decrypt(hexPayload string) []byte {
@@ -56,7 +56,11 @@ func decrypt(hexPayload string) []byte {
 		panic(err)
 	}
 
-	return binary.RemovePKCS7Pad(crypto.NewCBCBlockMode(iv, cipher).Decrypt(hex.NewDecoder(strings.NewReader(hexPayload))))
+	plain, err := binary.RemovePKCS7Pad(crypto.NewCBCBlockMode(iv, cipher).Decrypt(hex.NewDecoder(strings.NewReader(hexPayload))), aes.BlockSize)
+	if err != nil {
+		panic(err)
+	}
+	return plain
 }
 
 func main() {

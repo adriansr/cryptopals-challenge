@@ -7,6 +7,7 @@ import (
 	"crypto/aes"
 	"github.com/adriansr/cryptopals-challenge/crypto"
 	"bufio"
+	"github.com/adriansr/cryptopals-challenge/binary"
 )
 
 func main() {
@@ -31,7 +32,7 @@ func main() {
 		plaintext := bm.Decrypt(inReader)
 		fmt.Printf("%s\n", string(plaintext))
 	} else {
-		ciphertext := bm.Encrypt(bufio.NewReader(fHandle))
+		ciphertext := bm.Encrypt(binary.NewPKCS7Reader(bufio.NewReader(fHandle), aes.BlockSize))
 		fmt.Printf("%s\n", string(base64.StdEncoding.EncodeToString(ciphertext)))
 	}
 }

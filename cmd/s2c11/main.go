@@ -28,7 +28,7 @@ func randomEncrypt(data []byte) (ct []byte, isECB bool) {
 		bm = crypto.NewECBBlockMode(cb)
 		isECB = true
 	}
-	return bm.Encrypt(plaintext), isECB
+	return bm.Encrypt(binary.NewPKCS7Reader(plaintext, aes.BlockSize)), isECB
 }
 
 func main() {

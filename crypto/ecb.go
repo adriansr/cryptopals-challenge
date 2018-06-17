@@ -4,7 +4,6 @@ import (
 	"crypto/cipher"
 	"io"
 	"github.com/adriansr/cryptopals-challenge/util"
-	"github.com/adriansr/cryptopals-challenge/binary"
 )
 
 type ECBBlockMode struct {
@@ -28,8 +27,7 @@ func (ecb *ECBBlockMode) Encrypt(input io.Reader) (ciphertext []byte) {
 			break
 		}
 		if nr != blockSize {
-			// TODO: What to do with padding?
-			buf = binary.PKCS7Pad(buf[:nr], blockSize)
+			panic("input to encrypt not padded")
 		}
 		ecb.cipher.Encrypt(buf, buf)
 		ciphertext = append(ciphertext, buf...)

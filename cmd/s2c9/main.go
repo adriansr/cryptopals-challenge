@@ -19,6 +19,6 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	padded := binary.PKCS7Pad(plaintext, length)
+	padded := binary.AddPKCS7Pad(plaintext, length)
 	fmt.Printf("%v\n", padded)
 }

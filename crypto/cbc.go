@@ -5,7 +5,6 @@ import (
 	"github.com/adriansr/cryptopals-challenge/crypto/xor"
 	"io"
 	"github.com/adriansr/cryptopals-challenge/util"
-	"github.com/adriansr/cryptopals-challenge/binary"
 )
 
 type CBCBlockMode struct {
@@ -33,7 +32,6 @@ func (cbc *CBCBlockMode) Encrypt(input io.Reader) (ciphertext []byte) {
 
 	for {
 		nr, err := util.Read(input, buf)
-		// fmt.Fprintf(os.Stderr, "encrypt read %d %v\n", nr ,err)
 		if err != nil && err != io.EOF {
 			panic(err)
 		}
@@ -41,8 +39,7 @@ func (cbc *CBCBlockMode) Encrypt(input io.Reader) (ciphertext []byte) {
 			break
 		}
 		if nr != blockSize {
-			// TODO: What to do with padding?
-			buf = binary.PKCS7Pad(buf[:nr], blockSize)
+			panic("input to encrypt not padded")
 		}
 		xor.XORBlocks(buf, iv)
 		cbc.cipher.Encrypt(buf, buf)

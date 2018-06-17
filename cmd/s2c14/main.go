@@ -43,7 +43,7 @@ func blindEncrypt(data []byte) []byte {
 	plaintext = append(append(append(plaintext, leading...), data...), target...)
 
 	bm := crypto.NewECBBlockMode(cb)
-	return bm.Encrypt(bytes.NewReader(plaintext))
+	return bm.Encrypt(binary.NewPKCS7Reader(bytes.NewReader(plaintext), aes.BlockSize))
 }
 
 func main() {
@@ -125,7 +125,7 @@ first:
 			copy(testBlock[0:], testBlock[1:])
 		}
 	}
-	secret = binary.RemovePKCS7Pad(secret)
+	secret = binary.WeakRemovePKCS7Pad(secret)
 	fmt.Printf("Got %d bytes:\n%s\n", len(secret), secret)
 	if !binary.Equals(secret, target) {
 		panic(target)

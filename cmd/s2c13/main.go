@@ -37,7 +37,7 @@ func profileFor(email string, bm crypto.BlockMode) (account string, ciphertext [
 		sum += int(val)
 	}
 	account = fmt.Sprintf("email=%s&uid=%d&role=user", email, 10 + (sum%10))
-	ciphertext = bm.Encrypt(strings.NewReader(account))
+	ciphertext = bm.Encrypt(binary.NewPKCS7Reader(strings.NewReader(account), aes.BlockSize))
 	return
 }
 
@@ -98,7 +98,10 @@ func main() {
 		if err != nil {
 			panic(err)
 		}
-		plaintext := binary.RemovePKCS7Pad(cb.Decrypt(bytes.NewReader(ciphertext)))
+		plaintext, err := binary.RemovePKCS7Pad(cb.Decrypt(bytes.NewReader(ciphertext)), aes.BlockSize)
+		if err != nil {
+			panic(err)
+		}
 		fmt.Printf("Attempting '%s'\n", terminal.PrettyASCII(plaintext))
 		login(string(plaintext))
 	} else {
