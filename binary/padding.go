@@ -16,6 +16,9 @@ func PKCS7Pad(data []byte, length int) []byte {
 
 func RemovePKCS7Pad(data []byte) []byte {
 	n := len(data)
+	if n == 0 {
+		return nil
+	}
 	pad := data[n-1]
 	if int(pad) < n {
 		for i := n-int(pad); i < n-1; i++ {
