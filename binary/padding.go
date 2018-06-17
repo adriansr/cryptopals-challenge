@@ -26,7 +26,7 @@ func RemovePKCS7Pad(data []byte, blockSize int) ([]byte, error) {
 		return nil, errors.New("data not aligned")
 	}
 	pad := data[n-1]
-	if int(pad) <= blockSize {
+	if 0 < int(pad) && int(pad) <= blockSize {
 		for i := n-int(pad); i < n-1; i++ {
 			if data[i] != pad {
 				return nil, errors.New("inconsistent padding")
