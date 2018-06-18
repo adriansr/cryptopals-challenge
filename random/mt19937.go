@@ -25,13 +25,14 @@ func NewMT19937Random() *MT19937 {
 	return &r
 }
 
-func (mt *MT19937) Seed(s uint32) {
+func (mt *MT19937) Seed(s uint32) *MT19937 {
 	mt.index = n
 	mt.mt[0] = s
 	for i := uint32(1); i < n; i++ {
 		s = f * (s ^ (s >> (w-2))) + i
 		mt.mt[i] = s
 	}
+	return mt
 }
 
 func (mt *MT19937) Next() uint32 {
