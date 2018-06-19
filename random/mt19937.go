@@ -47,7 +47,6 @@ func (mt *MT19937) Next() uint32 {
 	y ^= (y << s) & b
 	y ^= (y << t) & c
 	y ^= y >> l
-
 	mt.index ++
 	return y
 }
@@ -62,4 +61,40 @@ func (mt *MT19937) twist() {
 		mt.mt[i] = mt.mt[(i + m) % n] ^ xa
 	}
 	mt.index = 0
+}
+
+func untemper(y uint32) uint32 {
+	y ^= y >> l
+
+	y ^= (y << t) & c
+
+	y ^= (y << s) & b
+	y ^= (y << (2*s)) & 0x94284000
+	y ^= (y&1) << (4*s)
+
+	y ^= y >> u
+	y ^= y >> (2*u)
+	return y
+}
+
+type MT19937Cloner struct {
+	MT19937
+}
+
+func NewMT19937Cloner() *MT19937Cloner {
+	c := MT19937Cloner{}
+	return &c
+}
+
+func (c *MT19937Cloner) Feed(value uint32) bool {
+	if c.index >= n {
+		panic("feed too much")
+	}
+	c.mt[c.index] = untemper(value)
+	c.index ++
+	return c.index < n
+}
+
+func (c *MT19937Cloner) Get() *MT19937 {
+	return &c.MT19937
 }
