@@ -1,7 +1,7 @@
 package ascii
 
 // IsString checks if the given string contains only ASCII characters
-func IsString(bytes []byte) bool {
+func IsValid(bytes []byte) bool {
 	for _, b := range bytes {
 		if b & 0x80 != 0 {
 			return false
