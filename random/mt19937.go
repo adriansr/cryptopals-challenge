@@ -10,6 +10,9 @@ const (
 	DefaultSeed uint32 = 5489
 	lowerMask uint32 = (1 << r) - 1
 	upperMask uint32 = (^lowerMask) & ((1 << w) - 1)
+
+	// MT19937_N is the number of elements in the internal state
+	MT19937_N = n
 )
 
 type MT19937 struct {
