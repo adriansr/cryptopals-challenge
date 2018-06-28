@@ -14,6 +14,7 @@ import "encoding/binary"
 const (
 	chunkSizeBytes = 64
 	internalWords = 80
+	digestBytes = 20
 )
 
 type sha1 struct {
@@ -29,6 +30,19 @@ func NewSHA1() Digest {
 	s.h[2] = 0x98BADCFE
 	s.h[3] = 0x10325476
 	s.h[4] = 0xC3D2E1F0
+	return &s
+}
+
+func NewResumedSHA1(nbytes uint64, digest []byte) Digest {
+	if len(digest) != digestBytes {
+		panic(len(digest))
+	}
+	s := sha1 {
+		length: nbytes,
+	}
+	for i := 0; i < 5; i++ {
+		s.h[i] = binary.BigEndian.Uint32(digest[i*4:])
+	}
 	return &s
 }
 
@@ -63,7 +77,7 @@ func (s *sha1) GetDigest() []byte {
 	if len(state.buf) != 0 {
 		panic(len(state.buf))
 	}
-	var digest [20]byte
+	var digest [digestBytes]byte
 	for i := 0; i < 5; i++ {
 		binary.BigEndian.PutUint32(digest[i*4:], state.h[i])
 	}
