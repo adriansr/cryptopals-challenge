@@ -3,7 +3,6 @@ package small_num
 import (
 	"encoding/binary"
 	"github.com/adriansr/cryptopals-challenge/util"
-	"math/big"
 )
 
 type SmallDH struct {
@@ -35,12 +34,13 @@ func (dh *SmallDH) Key() uint32 {
 }
 
 func Modexp(n, e, m uint32) (r uint32) {
-	// TODO
-	mm := big.NewInt(int64(m))
-	nn := big.NewInt(int64(n))
-	ee := big.NewInt(int64(e))
-	rr := big.NewInt(0)
-	rr.Exp(nn, ee, mm)
-	return uint32(rr.Uint64())
+	result := uint32(1)
+	n %= m
+	for ; e > 0; e, n = e >> 1, (n * n) % m {
+		if e & 1 != 0 {
+			result = (result * n) % m
+		}
+	}
+	return result
 }
 

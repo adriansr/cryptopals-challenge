@@ -44,5 +44,3 @@ func (dh *DH) Key() *big.Int {
 	}
 	return dh.k
 }
-
-
